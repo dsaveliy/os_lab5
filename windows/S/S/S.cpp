@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <sstream>
 
 int main() {
@@ -20,12 +20,12 @@ int main() {
     }
 
     if (!iss.eof()) {
-        std::cerr << "Îøèáêà: íåêîððåêòíûé ââîä\n";
+        std::cerr << "ÐžÑˆÐ¸Ð±ÐºÐ°: Ð½ÐµÐºÐ¾Ñ€Ñ€ÐµÐºÑ‚Ð½Ñ‹Ð¹ Ð²Ð²Ð¾Ð´\n";
         return 1;
     }
 
     if (!hasNumbers) {
-        std::cerr << "Ïðåäóïðåæäåíèå: ïðîöåññ S íå ïîëó÷èë íè îäíîãî ÷èñëà\n";
+        std::cerr << "ÐŸÑ€ÐµÐ´ÑƒÐ¿Ñ€ÐµÐ¶Ð´ÐµÐ½Ð¸Ðµ: Ð¿Ñ€Ð¾Ñ†ÐµÑÑ S Ð½Ðµ Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ð» Ð½Ð¸ Ð¾Ð´Ð½Ð¾Ð³Ð¾ Ñ‡Ð¸ÑÐ»Ð°\n";
     }
     std::cout << sum << std::endl;
     return 0;

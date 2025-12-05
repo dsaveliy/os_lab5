@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <sstream>
 #include <vector>
 
@@ -21,7 +21,7 @@ int main() {
     }
 
     if (iss.fail() && !iss.eof()) {
-        std::cerr << "Îøèáêà: íåêîððåêòíûé ââîä\n";
+        std::cerr << "ÐžÑˆÐ¸Ð±ÐºÐ°: Ð½ÐµÐºÐ¾Ñ€Ñ€ÐµÐºÑ‚Ð½Ñ‹Ð¹ Ð²Ð²Ð¾Ð´\n";
         return 1;
     }
 

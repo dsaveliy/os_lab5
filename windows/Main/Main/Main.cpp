@@ -1,17 +1,17 @@
-#include <windows.h>
+п»ї#include <windows.h>
 #include <iostream>
 #include <string>
 
-// вспомогательная функция для запуска процесса с заданными stdin/stdout
+// РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅР°СЏ С„СѓРЅРєС†РёСЏ РґР»СЏ Р·Р°РїСѓСЃРєР° РїСЂРѕС†РµСЃСЃР° СЃ Р·Р°РґР°РЅРЅС‹РјРё stdin/stdout
 bool startProcess(const std::wstring& cmd, HANDLE hStdIn,
     HANDLE hStdOut, PROCESS_INFORMATION& pi) {
-    STARTUPINFOW si; // структура для параметров запуска
+    STARTUPINFOW si; // СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ РїР°СЂР°РјРµС‚СЂРѕРІ Р·Р°РїСѓСЃРєР°
     ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
-    si.dwFlags |= STARTF_USESTDHANDLES; // говорим использовать мои переданные хендлы потоков
+    si.dwFlags |= STARTF_USESTDHANDLES; // РіРѕРІРѕСЂРёРј РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РјРѕРё РїРµСЂРµРґР°РЅРЅС‹Рµ С…РµРЅРґР»С‹ РїРѕС‚РѕРєРѕРІ
     si.hStdInput = hStdIn;
     si.hStdOutput = hStdOut;
-    si.hStdError = GetStdHandle(STD_ERROR_HANDLE); // но ошибки в общую консоль
+    si.hStdError = GetStdHandle(STD_ERROR_HANDLE); // РЅРѕ РѕС€РёР±РєРё РІ РѕР±С‰СѓСЋ РєРѕРЅСЃРѕР»СЊ
     ZeroMemory(&pi, sizeof(pi));
 
     BOOL ok = CreateProcessW(
@@ -19,7 +19,7 @@ bool startProcess(const std::wstring& cmd, HANDLE hStdIn,
         const_cast<wchar_t*>(cmd.c_str()),
         NULL,
         NULL,
-        TRUE, // bInheritHandles - делаем хендлы наследуемыми
+        TRUE, // bInheritHandles - РґРµР»Р°РµРј С…РµРЅРґР»С‹ РЅР°СЃР»РµРґСѓРµРјС‹РјРё
         0,
         NULL,
         NULL,
@@ -35,16 +35,16 @@ int main() {
     SECURITY_ATTRIBUTES sa;
     sa.nLength = sizeof(sa);
     sa.lpSecurityDescriptor = NULL;
-    sa.bInheritHandle = TRUE; // делаем хендлы наследуемыми
+    sa.bInheritHandle = TRUE; // РґРµР»Р°РµРј С…РµРЅРґР»С‹ РЅР°СЃР»РµРґСѓРµРјС‹РјРё
 
-    // переменные для хранения информации о процессах
+    // РїРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РїСЂРѕС†РµСЃСЃР°С…
     PROCESS_INFORMATION piM, piA, piP, piS;
 
-    // будем пошагвоо создвать и использовать нужные хендлы (а как следствие и пайпы),
-    // пошаговость нужна, чтоб все процессы не наследовали лишние потоки, т.к. bInheritHandle = TRUE;
+    // Р±СѓРґРµРј РїРѕС€Р°РіРІРѕРѕ СЃРѕР·РґРІР°С‚СЊ Рё РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РЅСѓР¶РЅС‹Рµ С…РµРЅРґР»С‹ (Р° РєР°Рє СЃР»РµРґСЃС‚РІРёРµ Рё РїР°Р№РїС‹),
+    // РїРѕС€Р°РіРѕРІРѕСЃС‚СЊ РЅСѓР¶РЅР°, С‡С‚РѕР± РІСЃРµ РїСЂРѕС†РµСЃСЃС‹ РЅРµ РЅР°СЃР»РµРґРѕРІР°Р»Рё Р»РёС€РЅРёРµ РїРѕС‚РѕРєРё, С‚.Рє. bInheritHandle = TRUE;
     HANDLE r0, w0; // Main -> M
     if (!CreatePipe(&r0, &w0, &sa, 0)) return 1;
-    SetHandleInformation(w0, HANDLE_FLAG_INHERIT, 0); // не наследуемый
+    SetHandleInformation(w0, HANDLE_FLAG_INHERIT, 0); // РЅРµ РЅР°СЃР»РµРґСѓРµРјС‹Р№
 
     HANDLE r1, w1; // M -> A
     if (!CreatePipe(&r1, &w1, &sa, 0)) return 1;
@@ -69,24 +69,24 @@ int main() {
     if (!startProcess(L"S.exe", r3, w4, piS)) return 1;
     CloseHandle(r3);
     CloseHandle(w4);
-    SetHandleInformation(r4, HANDLE_FLAG_INHERIT, 0); // не наследуемый
+    SetHandleInformation(r4, HANDLE_FLAG_INHERIT, 0); // РЅРµ РЅР°СЃР»РµРґСѓРµРјС‹Р№
 
-    // читаем пользовательский ввод
+    // С‡РёС‚Р°РµРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёР№ РІРІРѕРґ
     std::string data;
-    std::cout << "Введите числа через пробел: ";
+    std::cout << "Р’РІРµРґРёС‚Рµ С‡РёСЃР»Р° С‡РµСЂРµР· РїСЂРѕР±РµР»: ";
     std::getline(std::cin, data);
     data.push_back('\n');
 
-    // переносим пользовательский ввод в хендл потока ввода первого процесса
+    // РїРµСЂРµРЅРѕСЃРёРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёР№ РІРІРѕРґ РІ С…РµРЅРґР» РїРѕС‚РѕРєР° РІРІРѕРґР° РїРµСЂРІРѕРіРѕ РїСЂРѕС†РµСЃСЃР°
     DWORD written = 0;
     if (!WriteFile(w0, data.c_str(), (DWORD)data.size(), &written, NULL)) {
-        std::cerr << "Не удалось записать данные\n";
+        std::cerr << "РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РїРёСЃР°С‚СЊ РґР°РЅРЅС‹Рµ\n";
     }
     CloseHandle(w0);
 
-    // читаем вывод последнего процесса назад в Main
-    // будет просто создавать временный буфер на 255 байт+символ конца строки, но
-    // если что циклом будем перезаписывать его и добавлять невместившися байты в результат
+    // С‡РёС‚Р°РµРј РІС‹РІРѕРґ РїРѕСЃР»РµРґРЅРµРіРѕ РїСЂРѕС†РµСЃСЃР° РЅР°Р·Р°Рґ РІ Main
+    // Р±СѓРґРµС‚ РїСЂРѕСЃС‚Рѕ СЃРѕР·РґР°РІР°С‚СЊ РІСЂРµРјРµРЅРЅС‹Р№ Р±СѓС„РµСЂ РЅР° 255 Р±Р°Р№С‚+СЃРёРјРІРѕР» РєРѕРЅС†Р° СЃС‚СЂРѕРєРё, РЅРѕ
+    // РµСЃР»Рё С‡С‚Рѕ С†РёРєР»РѕРј Р±СѓРґРµРј РїРµСЂРµР·Р°РїРёСЃС‹РІР°С‚СЊ РµРіРѕ Рё РґРѕР±Р°РІР»СЏС‚СЊ РЅРµРІРјРµСЃС‚РёРІС€РёСЃСЏ Р±Р°Р№С‚С‹ РІ СЂРµР·СѓР»СЊС‚Р°С‚
     std::string result;
     char buffer[256];
     DWORD readBytes = 0;
@@ -103,10 +103,10 @@ int main() {
     WaitForSingleObject(piS.hProcess, INFINITE);
 
     if (result.empty()) {
-        std::cerr << "Цепочка обработки завершилась с ошибкой (нет результата)\n";
+        std::cerr << "Р¦РµРїРѕС‡РєР° РѕР±СЂР°Р±РѕС‚РєРё Р·Р°РІРµСЂС€РёР»Р°СЃСЊ СЃ РѕС€РёР±РєРѕР№ (РЅРµС‚ СЂРµР·СѓР»СЊС‚Р°С‚Р°)\n";
     }
     else {
-        std::cout << "Результат: " << result;
+        std::cout << "Р РµР·СѓР»СЊС‚Р°С‚: " << result;
     }
 
     CloseHandle(piM.hProcess);
